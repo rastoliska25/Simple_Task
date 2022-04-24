@@ -3,8 +3,8 @@ package com.example.Simple_Task;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
 
 @RestController
 public class MessageRestController {
@@ -13,7 +13,12 @@ public class MessageRestController {
     MessageService messageService;
 
     @PostMapping("/metrics")
-    public String test(@RequestBody String date) throws SQLException, ClassNotFoundException {
+    public String test() throws SQLException, ClassNotFoundException {
+        return messageService.getCounters();
+    }
+
+    @PostMapping("/metrics/date")
+    public String test(@RequestParam("YYMMDD") String date) throws SQLException, ClassNotFoundException, ParseException {
         return messageService.getCounters(date);
     }
 

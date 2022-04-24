@@ -1,7 +1,5 @@
 package com.example.Simple_Task;
 
-import java.math.BigInteger;
-import java.util.Objects;
 import java.util.Optional;
 
 public class Message {
@@ -16,7 +14,7 @@ public class Message {
     private String message_status;
 
     public String getMessage_type() {
-        return Optional.ofNullable(message_type).orElse( "");
+        return Optional.ofNullable(message_type).orElse("");
     }
 
     public Long getTimestamp() {
@@ -36,18 +34,18 @@ public class Message {
     }
 
     public String getStatus_code() {
-        return Optional.ofNullable(status_code).orElse( "");
+        return Optional.ofNullable(status_code).orElse("");
     }
 
     public String getStatus_description() {
-        return Optional.ofNullable(status_description).orElse( "");
+        return Optional.ofNullable(status_description).orElse("");
     }
 
     public String getMessage_content() {
-        return Optional.ofNullable(message_content).orElse( "");
+        return Optional.ofNullable(message_content).orElse("");
     }
 
     public String getMessage_status() {
-        return Optional.ofNullable(message_status).orElse( "");
+        return Optional.ofNullable(message_status).orElse("");
     }
 }

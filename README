@@ -1,0 +1,6 @@
+
+1) update Input class -> line 20 and line 67 - insert your server adress
+2) insert server adress into application.properties
+3) for inserting JSON to DB -> post HTTP request with endpoint /messages and put JSON message into body
+4) for getting set of counters data from DB -> post HTTP request with endpoint /metrics without parameter for all data
+5) for getting set of counters data from DB up to inserted date -> post HTTP request with endpoint /metrics/date with parameter "YYMMDD" for data up to this date (e.g. - /metrics/date?YYMMDD=180203 - up to 03 February 2018)

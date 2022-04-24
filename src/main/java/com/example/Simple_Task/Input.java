@@ -2,12 +2,9 @@ package com.example.Simple_Task;
 
 import java.sql.*;
 import java.sql.DriverManager;
-import java.util.Collections;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Input {
 
@@ -60,7 +57,7 @@ public class Input {
         return status;
     }
 
-    public String counters(String date) throws ClassNotFoundException, SQLException {
+    public String counters() throws ClassNotFoundException, SQLException {
         String value = "";
         String sql = "";
 
@@ -76,6 +73,58 @@ public class Input {
                 "(SELECT COUNT(x.record) FROM (SELECT COUNT(*) as record from messages GROUP BY origin) as x) as totalDifferentOriginCodes, " +
                 "(SELECT COUNT(x.record) FROM (SELECT COUNT(*) as record from messages GROUP BY destination) as x) as totalDifferentDestinationCodes " +
                 " from messages ";
+        try (Statement statement = connection.createStatement()) {
+            ResultSet rs = statement.executeQuery(sql);
+            while (rs.next()) {
+                value = "Total number of processed JSON files: " + rs.getString("totalProcessedFiles");
+                value = value + "\n" + "Total number of rows: " + rs.getString("totalRows");
+                value = value + "\n" + "Total number of calls: " + rs.getString("totalMessages");
+                value = value + "\n" + "Total number of messages: " + rs.getString("totalCalls");
+                value = value + "\n" + "Total number of different origin country codes: " + rs.getString("totalDifferentOriginCodes");
+                value = value + "\n" + "Total number of different destination country codes: " + rs.getString("totalDifferentDestinationCodes");
+            }
+        } catch (SQLException ignored) {
+        }
+
+        return value;
+    }
+
+    public String counters(String date) throws ClassNotFoundException, SQLException, ParseException {
+        String value = "";
+        String sql = "";
+        String year;
+        String month;
+        String day;
+        String dateToConvert;
+        Date convertedDate;
+        Long timestamp;
+        String timestampSubstring;
+
+        if (!(date.length() == 6)) {
+            return "400 Bad request";
+        }
+
+        year = "20" + (date.substring(0, 2));
+        month = (date.substring(2, 4));
+        day = (date.substring(4, 6));
+        dateToConvert = day + "/" + month + "/" + year + " 00:00:00";
+        convertedDate = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse(dateToConvert);
+        timestamp = convertedDate.getTime();
+        timestampSubstring = timestamp.toString().substring(0, 10);
+        timestamp = Long.parseLong(timestampSubstring);
+
+        Connection connection = null;
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        System.out.println("Connecting to database");
+        connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/phonedb", "root", "password");
+        System.out.println("Connection to database phonedb successful");
+
+        sql = String.format("SELECT Count(*) as totalProcessedFiles, Count(*) as totalRows, " +
+                "(SELECT COUNT(*) from messages where message_type like 'CALL' AND timestamp <= %1$d) as totalCalls, " +
+                "(SELECT COUNT(*) from messages where message_type like 'MSG' AND timestamp <= %1$d) as totalMessages, " +
+                "(SELECT COUNT(x.record) FROM (SELECT COUNT(*) as record from messages WHERE timestamp <= %1$d GROUP BY origin) as x) as totalDifferentOriginCodes, " +
+                "(SELECT COUNT(x.record) FROM (SELECT COUNT(*) as record from messages WHERE timestamp <= %1$d GROUP BY destination) as x) as totalDifferentDestinationCodes " +
+                " from messages WHERE timestamp <= %1$d", timestamp);
         try (Statement statement = connection.createStatement()) {
             ResultSet rs = statement.executeQuery(sql);
             while (rs.next()) {
