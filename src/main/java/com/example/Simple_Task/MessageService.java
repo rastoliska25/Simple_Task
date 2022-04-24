@@ -20,7 +20,7 @@ public class MessageService {
     public String addProduct(Message newMessage) throws SQLException, ClassNotFoundException {
         //newProduct.setID("126");
         //return new Message("458", "peees");
-        return input.insertt(newMessage);
+        return input.insert(newMessage);
     }
 
 
