@@ -70,11 +70,21 @@ public class Input {
         connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/phonedb", "root", "password");
         System.out.println("Connection to database phonedb successful");
 
-        sql = "SELECT status_code from messages where ID = 50";
+        sql = "SELECT Count(*) as totalProcessedFiles, Count(*) as totalRows, " +
+                "(SELECT COUNT(*) from messages where message_type like 'CALL') as totalCalls, " +
+                "(SELECT COUNT(*) from messages where message_type like 'MSG') as totalMessages, " +
+                "(SELECT COUNT(x.record) FROM (SELECT COUNT(*) as record from messages GROUP BY origin) as x) as totalDifferentOriginCodes, " +
+                "(SELECT COUNT(x.record) FROM (SELECT COUNT(*) as record from messages GROUP BY destination) as x) as totalDifferentDestinationCodes " +
+                " from messages ";
         try (Statement statement = connection.createStatement()) {
             ResultSet rs = statement.executeQuery(sql);
             while (rs.next()) {
-                value = rs.getString("status_code");
+                value = "Total number of processed JSON files: " + rs.getString("totalProcessedFiles");
+                value = value + "\n" + "Total number of rows: " + rs.getString("totalRows");
+                value = value + "\n" + "Total number of calls: " + rs.getString("totalMessages");
+                value = value + "\n" + "Total number of messages: " + rs.getString("totalCalls");
+                value = value + "\n" + "Total number of different origin country codes: " + rs.getString("totalDifferentOriginCodes");
+                value = value + "\n" + "Total number of different destination country codes: " + rs.getString("totalDifferentDestinationCodes");
             }
         } catch (SQLException ignored) {
         }
