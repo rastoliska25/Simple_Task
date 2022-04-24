@@ -10,11 +10,8 @@ import java.util.List;
 public class MessageService {
     Input input = new Input();
 
-    public List<Message> getAllProducts() {
-        List<Message> listOfMessages = new ArrayList<>();
-        //listOfMessages.add(new Message("123", "iphone X"));
-        //listOfMessages.add(new Message("251", "samsung Y"));
-        return listOfMessages;
+    public String getCounters(String date) throws SQLException, ClassNotFoundException {
+        return input.counters(date);
     }
 
     public String addMessage(Message newMessage) throws SQLException, ClassNotFoundException {
