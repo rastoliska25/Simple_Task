@@ -29,7 +29,6 @@ public class MessageRestController {
     @PostMapping("/messages")
     @ResponseStatus(HttpStatus.FAILED_DEPENDENCY)
     public String test(@RequestBody Message newMessage) throws SQLException, ClassNotFoundException {
-        //return "201 Created";
-        return messageService.addProduct(newMessage);
+        return messageService.addMessage(newMessage);
     }
 }

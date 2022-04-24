@@ -17,27 +17,7 @@ public class MessageService {
         return listOfMessages;
     }
 
-    public String addProduct(Message newMessage) throws SQLException, ClassNotFoundException {
-        //newProduct.setID("126");
-        //return new Message("458", "peees");
+    public String addMessage(Message newMessage) throws SQLException, ClassNotFoundException {
         return input.insert(newMessage);
     }
-
-
-
-
-
-   /* public Product getProductById(String id){
-        Predicate byId = p -> p.getId().equals(id);
-        return filterProducts(byId);
-    }
-
-    private Product filterProducts(Predicate strategy) {
-        return getAllProducts().stream().filter((java.util.function.Predicate<? super Product>) strategy).findFirst().orElse(null);
-    }
-/*
-    public Product addProduct(Product newProduct) {
-        newProduct.setId("126");
-        return newProduct;
-    }  */
 }

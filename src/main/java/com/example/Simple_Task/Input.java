@@ -8,34 +8,36 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 public class Input {
 
-    public String insertt(Message message) {
-        if (message.getID().equals("1")) {
-            return "je to 1";
-        } else
-            return "nie je to 1";
-    }
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-
     public String insert(Message message) throws ClassNotFoundException, SQLException {
+        String status = "";
+        String sql = "";
 
         Connection connection = null;
         Statement statement = null;
-
         Class.forName("com.mysql.cj.jdbc.Driver");
         System.out.println("Connecting to database");
         connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/phonedb", "root", "password");
-        System.out.println("You are now connected to database");
+        System.out.println("Connection to database phonedb successful");
 
         statement = connection.createStatement();
 
-        String sql = "INSERT INTO messages (message_type) " +
-                "VALUES('test')";
+        if (message.getMessage_type().equals("MSG")) {
+            sql = String.format("INSERT INTO messages (message_type, timestamp, origin, destination, message_content, message_status) " +
+                    "VALUES('%s', %d, %d, %d, '%s', '%s')", message.getMessage_type(), message.getTimestamp(), message.getOrigin(), message.getDestination(), message.getMessage_content(), message.getMessage_status());
+            status = "201 CREATED";
 
-        statement.executeUpdate(sql);
+            statement.executeUpdate(sql);
+        } else if (message.getMessage_type().equals("CALL")) {
+            sql = String.format("INSERT INTO messages (message_type, timestamp, origin, destination, duration, status_code, status_description) " +
+                    "VALUES('%s', %d, %d, %d, %d, '%s', '%s')", message.getMessage_type(), message.getTimestamp(), message.getOrigin(), message.getDestination(), message.getDuration(), message.getStatus_code(), message.getStatus_description());
+            status = "200 OK";
 
-        return "vlozene";
+            statement.executeUpdate(sql);
+        } else {
+            status = "400 Bad request";
+        }
+
+        return status;
     }
 
 
