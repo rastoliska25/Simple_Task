@@ -2,9 +2,12 @@ package com.example.Simple_Task;
 
 import java.sql.*;
 import java.sql.DriverManager;
+import java.util.Collections;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+
 
 public class Input {
 
@@ -62,17 +65,20 @@ public class Input {
         String sql = "";
 
         Connection connection = null;
-        Statement statement = null;
         Class.forName("com.mysql.cj.jdbc.Driver");
         System.out.println("Connecting to database");
         connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/phonedb", "root", "password");
         System.out.println("Connection to database phonedb successful");
 
-        statement = connection.createStatement();
+        sql = "SELECT status_code from messages where ID = 50";
+        try (Statement statement = connection.createStatement()) {
+            ResultSet rs = statement.executeQuery(sql);
+            while (rs.next()) {
+                value = rs.getString("status_code");
+            }
+        } catch (SQLException ignored) {
+        }
 
-        value = "testovanie";
         return value;
     }
-
-
-};
+}
